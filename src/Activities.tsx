@@ -32,7 +32,7 @@ const quiz = [
 type Inspection = { condition: string; finding: string; action: string };
 const emptyInspection = Object.fromEntries(components.map(c => [c,{condition:"Good",finding:"",action:""}])) as Record<string,Inspection>;
 
-export default function Activities() {
+function ActivitiesStudent() {
   const [tab,setTab] = useState("sequence");
   const [learner,setLearner] = useState({group:"",members:"",grade:"Grade 10",section:"",date:new Date().toISOString().slice(0,10),unit:"Desktop computer"});
   const [orders,setOrders] = useState<number[]>(Array(8).fill(0));
@@ -48,7 +48,8 @@ export default function Activities() {
   const affected = Object.values(inspection).filter(x => x.condition !== "Good").length;
   const inspected = Object.values(inspection).filter(x => x.condition !== "Not inspected").length;
   const percentage = inspected ? (affected/inspected)*100 : 0;
-  const sequenceScore = orders.filter((v,i)=>v===i+1).length;
+  const expectedSequence = [4,5,1,7,3,2,6,8];
+  const sequenceScore = orders.filter((v,i)=>v===expectedSequence[i]).length;
   const quizScore = quiz.reduce((sum,q,i)=>sum+(quizAnswers[i]===q[2]?1:0),0);
   const ready = learner.group.trim() && learner.members.trim() && learner.section.trim();
   function updateInspection(name:string,key:keyof Inspection,value:string) {
@@ -119,4 +120,57 @@ export default function Activities() {
       <footer className="activity-footer">Smart CSS Activities • Computer Maintenance with Safety</footer>
     </div>
   </main>;
+}
+
+
+function ActivityReports() {
+  const [key,setKey] = useState("");
+  const [rows,setRows] = useState<any[]>([]);
+  const [error,setError] = useState("");
+  const [loading,setLoading] = useState(false);
+  async function load(e: React.FormEvent) {
+    e.preventDefault(); setLoading(true); setError("");
+    try {
+      const res = await fetch("/api/activities",{headers:{"x-teacher-key":key}});
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error || "Unable to load reports.");
+      setRows(data.submissions || []);
+      sessionStorage.setItem("css_teacher_key",key);
+    } catch(err) { setError(err instanceof Error?err.message:"Unable to load reports."); }
+    finally { setLoading(false); }
+  }
+  return <main style={{minHeight:"100vh",background:"#edf3fb",padding:24,fontFamily:"Inter,system-ui,sans-serif",color:"#17243b"}}>
+    <div style={{maxWidth:1100,margin:"auto"}}>
+      <h1 style={{color:"#12356b"}}>Computer Maintenance Activity Reports</h1>
+      <p>Teacher-only view of group performance submissions.</p>
+      <form onSubmit={load} style={{display:"flex",gap:8,maxWidth:520,margin:"18px 0"}}>
+        <input type="password" value={key} onChange={e=>setKey(e.target.value)} placeholder="Teacher access key" required style={{flex:1,padding:12,border:"1px solid #cbd8e8",borderRadius:8}}/>
+        <button disabled={loading} style={{padding:"12px 18px",background:"#1456a5",color:"white",border:0,borderRadius:8,fontWeight:800}}>{loading?"Loading...":"View Reports"}</button>
+      </form>
+      {error&&<p style={{color:"#a52d2d"}}>{error}</p>}
+      {rows.map(row=><article key={row.id} style={{background:"white",border:"1px solid #dce6f3",borderRadius:12,padding:18,margin:"14px 0"}}>
+        <h2 style={{margin:"0 0 6px",color:"#12356b"}}>{row.groupName} — {row.grade} / {row.section}</h2>
+        <small>{new Date(row.createdAt).toLocaleString()}</small>
+        <p><b>Members:</b> {row.payload?.learner?.members || "—"} · <b>Technician:</b> {row.payload?.roles?.technician || "—"} · <b>Recorder:</b> {row.payload?.roles?.recorder || "—"}</p>
+        <p><b>Sequence:</b> {row.payload?.sequence?.score ?? 0}/8 · <b>Quiz:</b> {row.payload?.quiz?.score ?? 0}/10 · <b>Inspection affected:</b> {row.payload?.numeracy?.percentage ?? 0}%</p>
+        <details><summary style={{cursor:"pointer",fontWeight:800}}>View full submitted report</summary>
+          <h3>Inspection findings</h3>
+          <pre style={{whiteSpace:"pre-wrap",fontFamily:"inherit",fontSize:13}}>{JSON.stringify(row.payload?.inspection || {},null,2)}</pre>
+          <h3>Procedures and recommendations</h3>
+          <p>{row.payload?.report?.procedures || "No procedure notes submitted."}</p>
+          <p>{row.payload?.report?.findings || "No findings submitted."}</p>
+          <p>{row.payload?.report?.recommendations || "No recommendations submitted."}</p>
+          <h3>Reflections</h3>
+          {(row.payload?.reflection || []).map((v:string,i:number)=><p key={i}>{i+1}. {v || "—"}</p>)}
+          <a href={row.payload?.googleDocTemplate || "https://docs.google.com"} target="_blank" rel="noreferrer">Open Google Docs report template ↗</a>
+        </details>
+      </article>)}
+      {!rows.length&&!error&&<p style={{color:"#60738e"}}>Authenticate with your teacher access key to load group reports.</p>}
+      <p><a href="/teacher">Return to main teacher dashboard</a></p>
+    </div>
+  </main>;
+}
+
+export default function Activities() {
+  return window.location.pathname.replace(/\\/+$/, "") === "/activity-reports" ? <ActivityReports/> : <ActivitiesStudent/>;
 }
