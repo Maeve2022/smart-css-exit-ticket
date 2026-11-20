@@ -38,7 +38,7 @@ function scoreAnswers(a: Answers): Scores {
   return { q1, q2, q3, q4, q5, literacy, total: q1 + q2 + q3 + q4 + q5 + literacy };
 }
 
-function App() {
+function TeacherDashboard() {
   const [accessKey, setAccessKey] = useState(sessionStorage.getItem("css_teacher_key") || "");
   const [keyInput, setKeyInput] = useState("");
   const [authenticated, setAuthenticated] = useState(false);
@@ -271,6 +271,130 @@ function App() {
       </div>}
       <footer className="footer no-print">Smart CSS Exit Ticket • Teacher-managed learner assessment records</footer>
     </div>
+  );
+}
+
+
+function App() {
+  const path = window.location.pathname.replace(/\/+$/, "") || "/";
+  return path === "/teacher" ? <TeacherDashboard /> : <StudentPortal />;
+}
+
+function StudentPortal() {
+  const [name, setName] = useState("");
+  const [grade, setGrade] = useState("Grade 10");
+  const [section, setSection] = useState("");
+  const [answers, setAnswers] = useState<Answers>(emptyAnswers);
+  const [reflection, setReflection] = useState<Reflection>(emptyReflection);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  function updateAnswer(key: keyof Answers, value: string) {
+    setAnswers(old => ({ ...old, [key]: value }));
+  }
+  function updateReflection(key: keyof Reflection, value: string) {
+    setReflection(old => ({ ...old, [key]: value }));
+  }
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!name.trim() || !section.trim() || Object.values(answers).some(v => !v.trim())) {
+      setMessage("Please complete your name, grade, section, and all six response fields.");
+      return;
+    }
+    setBusy(true);
+    setMessage("");
+    try {
+      const response = await fetch("/api/records", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, grade, section, answers, reflection })
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.error || `Submission failed (${response.status}).`);
+      setSubmitted(true);
+      setMessage("Your answers have been submitted successfully.");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Unable to submit your answers. Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  if (submitted) return (
+    <main className="student-shell">
+      <section className="student-card success-card">
+        <div className="brand-mark">CSS</div>
+        <div className="success-icon">✓</div>
+        <p className="eyebrow">GRADE 10 • COMPUTER SYSTEMS SERVICING</p>
+        <h1>Submission Received!</h1>
+        <p className="muted">Thank you, {name}. Your Smart CSS Exit Ticket has been submitted successfully.</p>
+        <div className="notice success-notice">Your responses are now recorded. You may inform your teacher that you have completed the exit ticket.</div>
+        <button className="button primary wide" onClick={() => {
+          setName(""); setGrade("Grade 10"); setSection(""); setAnswers(emptyAnswers);
+          setReflection(emptyReflection); setSubmitted(false); setMessage("");
+        }}>Return to Student Form</button>
+      </section>
+    </main>
+  );
+
+  return (
+    <main className="student-shell">
+      <section className="student-card">
+        <header className="student-header">
+          <div className="brand-mark">CSS</div>
+          <div>
+            <p className="eyebrow">GRADE 10 • COMPUTER SYSTEMS SERVICING</p>
+            <h1>Smart CSS Exit Ticket</h1>
+            <p className="muted">Computer Maintenance with Safety</p>
+          </div>
+        </header>
+        <div className="student-instructions">
+          <strong>Instructions</strong>
+          <p>Enter your information and answer each question independently. Check your responses before submitting. All six response fields are required. The three generalization questions are optional.</p>
+        </div>
+        {message && <div className="notice" role="alert">{message}</div>}
+        <form onSubmit={submit}>
+          <h2 className="student-section-title">Learner Information</h2>
+          <div className="form-grid">
+            <div className="field full">
+              <label htmlFor="learner-name">Complete learner name</label>
+              <input id="learner-name" value={name} onChange={e => setName(e.target.value)} placeholder="Surname, First Name, Middle Initial" maxLength={150} required />
+            </div>
+            <div className="field">
+              <label htmlFor="learner-grade">Grade level</label>
+              <select id="learner-grade" value={grade} onChange={e => setGrade(e.target.value)}>
+                {["Grade 7","Grade 8","Grade 9","Grade 10","Grade 11","Grade 12"].map(x => <option key={x}>{x}</option>)}
+              </select>
+            </div>
+            <div className="field">
+              <label htmlFor="learner-section">Section</label>
+              <input id="learner-section" value={section} onChange={e => setSection(e.target.value)} placeholder="Enter your section" maxLength={100} required />
+            </div>
+          </div>
+
+          <h2 className="student-section-title">Individual Exit Ticket <span>10 points</span></h2>
+          <Question n="1" title="Safety precautions" points="3 points" prompt="Give at least three safety precautions to observe before and during computer maintenance." value={answers.q1} onChange={v => updateAnswer("q1",v)} />
+          <Question n="2" title="Understanding safety" points="2 points" prompt="Why must a computer be shut down and unplugged before cleaning or opening it?" value={answers.q2} onChange={v => updateAnswer("q2",v)} />
+          <Question n="3" title="Tools and PPE" points="2 points" prompt="Name two tools or protective equipment used in computer maintenance and state their purpose." value={answers.q3} onChange={v => updateAnswer("q3",v)} />
+          <Question n="4" title="Component inspection" points="1 point" prompt="What should you inspect after cleaning the computer?" value={answers.q4} onChange={v => updateAnswer("q4",v)} />
+          <Question n="5" title="Software maintenance" points="1 point" prompt="Give one software maintenance task that helps protect a computer." value={answers.q5} onChange={v => updateAnswer("q5",v)} />
+          <Question n="L" title="Literacy check" points="1 point" prompt={'Write a 2–3 sentence maintenance recommendation using the terms “hazard,” “safety precaution,” and “maintenance.”'} value={answers.literacy} onChange={v => updateAnswer("literacy",v)} />
+          <div className="reflection-box">
+            <h3>Generalization • Optional reflection</h3>
+            <p className="muted">These discussion responses are optional and are not included in the 10-point score.</p>
+            <Question n="G1" title="Important steps" points="Optional" prompt="What are the important steps in performing computer maintenance safely?" value={reflection.g1} onChange={v => updateReflection("g1",v)} compact />
+            <Question n="G2" title="Personal application" points="Optional" prompt="Which safety practice will you apply at home or in school?" value={reflection.g2} onChange={v => updateReflection("g2",v)} compact />
+            <Question n="G3" title="Importance of maintenance" points="Optional" prompt="How does regular maintenance help keep a computer reliable and long-lasting?" value={reflection.g3} onChange={v => updateReflection("g3",v)} compact />
+          </div>
+          <p className="student-privacy-note">Your responses will be saved for your teacher to review. Do not close this page until you see the submission confirmation.</p>
+          <button className="button primary wide student-submit" type="submit" disabled={busy}>{busy ? "Submitting your answers..." : "Submit Exit Ticket"}</button>
+        </form>
+        <footer className="student-footer">Smart CSS Exit Ticket • Learner Assessment Portal</footer>
+      </section>
+    </main>
   );
 }
 

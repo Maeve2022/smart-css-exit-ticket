@@ -1,140 +1,58 @@
-# Smart CSS Exit Ticket — Vercel + Neon
+# Smart CSS Exit Ticket — Student Portal + Teacher Dashboard
 
-A React/Vite teacher dashboard with keyword-based auto-scoring, persistent PostgreSQL records (Neon), grade/section filters, Excel export, and printable individual reports.
+React/Vite application for the Computer Maintenance with Safety exit ticket.
 
-## Requirements
+## Public and protected pages
 
-- Node.js 20 or newer
-- A Vercel account
-- A Neon PostgreSQL database
+- Student portal: `/` or `/student`
+- Teacher dashboard: `/teacher` (requires `TEACHER_ACCESS_KEY`)
 
-## 1. Create the database
+Learners can submit their responses without a teacher access key. Only authenticated teachers can list or delete stored learner records. The API calculates the keyword-based score on the server; it does not trust a score sent by the browser.
 
-1. Create a project at https://neon.tech/
-2. Open the Neon SQL Editor.
-3. Run the following SQL (the API also creates this table automatically on first request):
+## Required Vercel environment variables
 
-```sql
-CREATE TABLE IF NOT EXISTS css_exit_tickets (
-  id BIGSERIAL PRIMARY KEY,
-  learner_name TEXT NOT NULL,
-  grade_level TEXT NOT NULL,
-  section TEXT NOT NULL,
-  answers JSONB NOT NULL,
-  reflection JSONB NOT NULL DEFAULT '{}'::jsonb,
-  scores JSONB NOT NULL,
-  total_score INTEGER NOT NULL,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-);
-```
+Set these in **Vercel → Project → Settings → Environment Variables** for the Production environment:
 
-4. Copy the Neon connection string. Keep it private.
+- `DATABASE_URL` — Neon PostgreSQL connection string
+- `TEACHER_ACCESS_KEY` — long, unique teacher-only secret
 
-## 2. Run locally
+Redeploy after adding or changing environment variables.
 
-```bash
-npm install
-```
+## Database
 
-Create a `.env` file in the project root:
+The API creates the `css_exit_tickets` table automatically on its first request. The table stores learner name, grade, section, written answers, optional generalization reflections, scores, and submission time.
 
-```env
-DATABASE_URL=your_neon_connection_string
-TEACHER_ACCESS_KEY=use-a-long-unique-secret
-```
+## Deploy
 
-Run the development server:
+1. Extract this ZIP file. Upload the extracted project contents (not the ZIP file itself) to the Git repository connected to Vercel, or import the project. Make sure the updated `src/App.tsx`, `vercel.json`, and `api/records.ts` are included.
+2. Framework preset: Vite.
+3. Build command: `npm run build`.
+4. Output directory: `dist`.
+5. Add the two environment variables above.
+6. Deploy or redeploy.
 
-```bash
-npm run dev
-```
+## Use
 
-Important: Vite does not run Vercel API functions locally by itself. To test the `/api/records` endpoint locally, use the Vercel CLI:
+- Share `https://YOUR-PROJECT.vercel.app/student` with learners. This opens the learner form and does not ask for the teacher access key. The root URL `/` also opens the learner form.
+- Use `https://YOUR-PROJECT.vercel.app/teacher` for the teacher dashboard. Do not share this teacher URL with learners.
+- The teacher dashboard requires the `TEACHER_ACCESS_KEY`.
+- Learner submissions are public; record viewing and deletion remain protected.
 
-```bash
-npm install -g vercel
-vercel dev
-```
+## Assessment scoring
 
-Then open the local URL printed by Vercel. Sign in using the value of `TEACHER_ACCESS_KEY`.
+The 10-point scoring is keyword-based:
+- Q1 safety precautions: 3
+- Q2 shutdown/unplug: 2
+- Q3 tools/PPE: 2
+- Q4 component inspection: 1
+- Q5 software maintenance: 1
+- Literacy check: 1
 
-## 3. Deploy to Vercel
+This is not semantic AI grading. Review learner responses before finalizing official marks. A correct answer using an unrecognized phrase may receive fewer automated points.
 
-### Option A — GitHub (recommended)
+## Security and learner-data considerations
 
-1. Create a GitHub repository and upload the contents of this folder.
-2. In Vercel, select **Add New → Project** and import the repository.
-3. Framework preset: **Vite**.
-4. Build command: `npm run build`.
-5. Output directory: `dist`.
-6. In **Project → Settings → Environment Variables**, add:
-
-   - `DATABASE_URL` = your Neon connection string
-   - `TEACHER_ACCESS_KEY` = a long, unique teacher-only secret
-
-7. Add the variables to Production (and Preview only if you intend to use preview deployments).
-8. Click **Deploy**. Redeploy after changing environment variables.
-
-### Option B — Vercel CLI
-
-From this project folder:
-
-```bash
-npm install
-npm install -g vercel
-vercel
-```
-
-Follow the prompts to link the project. Add the two environment variables in the Vercel project settings, then deploy:
-
-```bash
-vercel --prod
-```
-
-## 4. How to use
-
-- Open the deployed site.
-- Enter the teacher access key.
-- Enter the learner's name, grade, section, and exit-ticket responses.
-- The score preview updates as the learner's responses are typed.
-- Save the record to PostgreSQL.
-- Filter records by grade and section.
-- Export the filtered class records to Excel.
-- Use **Print** beside a learner to print an individual report.
-
-## Scoring logic (10 points)
-
-- Q1: 3 points — power isolation; PPE/ESD; safe work area/tools/liquid precautions.
-- Q2: 2 points — shutdown and unplugging.
-- Q3: 2 points — recognized tools/PPE and stated purpose.
-- Q4: 1 point — component inspection.
-- Q5: 1 point — software maintenance task.
-- Literacy: 1 point — 2–3 sentences containing “hazard,” “safety precaution,” and “maintenance.”
-
-This is keyword-based scoring, not semantic AI grading. It can miss correct answers written with unexpected vocabulary. A teacher must review responses and adjust official marks when appropriate.
-
-## Security and learner-data notes
-
-- Do not put `DATABASE_URL` or `TEACHER_ACCESS_KEY` in frontend code or commit `.env`.
-- The API requires the teacher access key for every read/write/delete request.
-- Use a long, unique access key and keep it private.
-- Share the deployed URL only with authorized staff. Avoid using real learner data in public preview deployments.
-- This starter has a single shared teacher key, not individual teacher accounts or role-based access.
-- The browser stores the access key in session storage for the active tab/session.
-- Set up appropriate school data-protection practices and backups before using this for official learner records.
-
-## Project structure
-
-```text
-smart-css-exit-ticket/
-├── api/
-│   └── records.ts       # Vercel serverless API + Neon PostgreSQL
-├── src/
-│   ├── App.tsx          # Dashboard, assessment, records, export, print
-│   ├── main.tsx
-│   └── style.css
-├── index.html
-├── package.json
-├── vite.config.ts
-└── tsconfig*.json
-```
+- Never put `DATABASE_URL` or `TEACHER_ACCESS_KEY` in frontend code or commit `.env`.
+- Public learners can submit data but cannot read or delete records through the API.
+- Because the student form is public, share it only with your class and review submissions for spam or duplicate entries.
+- Follow school data privacy and retention practices. Back up the database appropriately.
