@@ -278,7 +278,7 @@ function TeacherDashboard() {
 
 function App() {
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
-  return path === "/teacher" ? <TeacherDashboard /> : path === "/activities" ? <Activities /> : <StudentPortal />;
+  return path === "/teacher" ? <TeacherDashboard /> : (path === "/activities" || path === "/activity-reports") ? <Activities /> : <StudentPortal />;
 }
 
 function StudentPortal() {
