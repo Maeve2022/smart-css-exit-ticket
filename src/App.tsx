@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import * as XLSX from "xlsx";
 import Activities from "./Activities";
+import FormativeAssessment from "./FormativeAssessment";
 
 type Answers = { q1: string; q2: string; q3: string; q4: string; q5: string; literacy: string };
 type Reflection = { g1: string; g2: string; g3: string };
@@ -278,7 +279,7 @@ function TeacherDashboard() {
 
 function App() {
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
-  return path === "/teacher" ? <TeacherDashboard /> : (path === "/activities" || path === "/activity-reports") ? <Activities /> : <StudentPortal />;
+  return path === "/teacher" ? <TeacherDashboard /> : (path === "/activities" || path === "/activity-reports") ? <Activities /> : (path === "/formative-assessment" || path === "/formative-results") ? <FormativeAssessment /> : <StudentPortal />;
 }
 
 function StudentPortal() {
