@@ -181,7 +181,7 @@ function TeacherDashboard() {
     <div className="app-shell">
       <header className="topbar no-print">
         <div><span className="brand-mark small">CSS</span><div><strong>Smart CSS Exit Ticket</strong><small>Computer Maintenance with Safety</small></div></div>
-        <div style={{display:"flex",gap:8,alignItems:"center"}}><a className="button ghost" href="/activities" style={{textDecoration:"none"}}>Student Activities ↗</a><button className="button ghost" onClick={() => { sessionStorage.removeItem("css_teacher_key"); setAuthenticated(false); setAccessKey(""); }}>Log out</button></div>
+        <div style={{display:"flex",gap:8,alignItems:"center"}}><a className="button ghost" href="/activities" style={{textDecoration:"none"}}>Student Activities ↗</a><a className="button ghost" href="/activity-reports" style={{textDecoration:"none"}}>Group Reports ↗</a><button className="button ghost" onClick={() => { sessionStorage.removeItem("css_teacher_key"); setAuthenticated(false); setAccessKey(""); }}>Log out</button></div>
       </header>
 
       <main className="container">
