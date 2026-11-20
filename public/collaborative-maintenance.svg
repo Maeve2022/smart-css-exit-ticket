@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+<title id="title">Collaborative computer maintenance</title>
+<desc id="desc">Two computer systems servicing learners work together. One learner cleans a desktop computer while the other records inspection findings on a clipboard.</desc>
+<defs>
+ <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#08275f"/><stop offset="1" stop-color="#1268b9"/></linearGradient>
+ <linearGradient id="panel" x2="0" y2="1"><stop stop-color="#f9fcff"/><stop offset="1" stop-color="#dcecff"/></linearGradient>
+ <linearGradient id="screen" x2="1" y2="1"><stop stop-color="#0b2c65"/><stop offset="1" stop-color="#168ad4"/></linearGradient>
+ <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#00163d" flood-opacity=".35"/></filter>
+</defs>
+<rect width="1200" height="520" rx="28" fill="url(#bg)"/>
+<path d="M0 390 Q300 340 600 405 T1200 380 V520 H0Z" fill="#061b45" opacity=".55"/>
+<g opacity=".18" fill="none" stroke="#8bd8ff" stroke-width="3"><path d="M35 60h240v120H35zM925 35h220v90H925z"/><path d="M70 90h165M70 120h125M960 70h150M960 95h110"/></g>
+<!-- workstation -->
+<g filter="url(#shadow)">
+ <rect x="430" y="135" width="430" height="270" rx="20" fill="#111d32" stroke="#8bcaff" stroke-width="7"/>
+ <rect x="452" y="157" width="386" height="220" rx="10" fill="#152d50"/>
+ <rect x="470" y="175" width="350" height="184" rx="7" fill="url(#screen)"/>
+ <path d="M500 315l65-78 45 42 58-76 105 112" fill="none" stroke="#39c7ff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+ <circle cx="645" cy="220" r="20" fill="#ffdc45"/><path d="M610 359h70l18 42H592z" fill="#273e5f"/>
+ <rect x="890" y="190" width="190" height="230" rx="18" fill="#17243b" stroke="#8bcaff" stroke-width="6"/>
+ <rect x="910" y="210" width="150" height="190" rx="8" fill="#0b376a"/>
+ <circle cx="985" cy="240" r="9" fill="#55d5ff"/><path d="M930 275h110M930 300h110M930 325h85M930 350h95" stroke="#80cfff" stroke-width="8" stroke-linecap="round"/>
+ <circle cx="985" cy="410" r="5" fill="#ffdc45"/>
+</g>
+<!-- table -->
+<path d="M70 425H1135l-45 42H110z" fill="#d9eaff"/><path d="M130 467v40m900-40v40" stroke="#8bb9e8" stroke-width="16"/>
+<!-- learner left -->
+<g filter="url(#shadow)">
+ <path d="M85 405q5-115 115-125 105 5 120 125v30H85z" fill="#f2f7ff"/>
+ <path d="M95 330q45-55 105-45l35 120H95z" fill="#1555a0"/>
+ <path d="M250 330q45-40 70 5l-25 100h-75z" fill="#1555a0"/>
+ <ellipse cx="205" cy="180" rx="76" ry="88" fill="#b96f45"/>
+ <path d="M130 177q-15-100 75-112 90 12 82 94-30-35-70-45-32 30-87 26z" fill="#17243b"/>
+ <path d="M150 185q20-12 38 0m40 0q18-12 35 0" stroke="#17243b" stroke-width="7" fill="none" stroke-linecap="round"/>
+ <path d="M167 220q35 22 70 0" stroke="#7d342e" stroke-width="6" fill="none" stroke-linecap="round"/>
+ <rect x="137" y="168" width="57" height="34" rx="13" fill="none" stroke="#39c7ff" stroke-width="7"/><rect x="218" y="168" width="57" height="34" rx="13" fill="none" stroke="#39c7ff" stroke-width="7"/><path d="M194 183h24" stroke="#39c7ff" stroke-width="7"/>
+ <path d="M275 335q70 10 150 60" stroke="#b96f45" stroke-width="27" stroke-linecap="round" fill="none"/>
+ <path d="M410 394l35-40" stroke="#d7e7f8" stroke-width="19" stroke-linecap="round"/>
+</g>
+<!-- learner right -->
+<g filter="url(#shadow)">
+ <path d="M760 420q15-110 115-120 110 10 125 120v20H760z" fill="#f4f8ff"/>
+ <path d="M780 330q40-40 90-25l20 115H780z" fill="#0f69a9"/>
+ <path d="M925 325q50-30 75 25l-10 80H910z" fill="#0f69a9"/>
+ <ellipse cx="870" cy="185" rx="70" ry="82" fill="#d79a69"/>
+ <path d="M800 178q-5-92 75-104 90 8 85 95-40-25-73-48-28 33-87 57z" fill="#1c263b"/>
+ <path d="M830 190q15-10 30 0m35 0q15-10 30 0" stroke="#26364c" stroke-width="7" fill="none" stroke-linecap="round"/>
+ <path d="M850 225q25 18 48 0" stroke="#8a4438" stroke-width="6" fill="none" stroke-linecap="round"/>
+ <path d="M830 177h45m25 0h45" stroke="#39c7ff" stroke-width="6" stroke-linecap="round"/>
+ <path d="M780 345q-50 35-100 45" stroke="#d79a69" stroke-width="25" stroke-linecap="round" fill="none"/>
+ <rect x="610" y="365" width="120" height="92" rx="10" fill="#ffdc45" stroke="#fff" stroke-width="6" transform="rotate(-8 610 365)"/>
+ <rect x="628" y="380" width="86" height="64" rx="4" fill="#fff"/>
+ <path d="M642 398h55m-55 17h55m-55 17h38" stroke="#1556a5" stroke-width="6" stroke-linecap="round"/>
+</g>
+<!-- labels -->
+<g font-family="Arial,sans-serif" font-weight="800">
+ <rect x="38" y="25" width="320" height="54" rx="17" fill="#ffdc45"/><text x="198" y="60" font-size="25" fill="#09285e" text-anchor="middle">TECHNICIAN</text>
+ <rect x="840" y="25" width="320" height="54" rx="17" fill="#fff"/><text x="1000" y="60" font-size="25" fill="#09285e" text-anchor="middle">RECORDER</text>
+ <rect x="390" y="455" width="420" height="48" rx="16" fill="#ffdc45"/><text x="600" y="487" font-size="22" fill="#09285e" text-anchor="middle">WORK TOGETHER • WORK SAFELY</text>
+</g>
+</svg>
