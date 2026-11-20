@@ -1,8 +1,28 @@
 {
   "rewrites": [
-    { "source": "/teacher", "destination": "/index.html" },
-    { "source": "/student", "destination": "/index.html" },
-    { "source": "/activities", "destination": "/index.html" },
-    { "source": "/activity-reports", "destination": "/index.html" }
+    {
+      "source": "/teacher",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/student",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/activities",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/activity-reports",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/formative-assessment",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/formative-results",
+      "destination": "/index.html"
+    }
   ]
 }
