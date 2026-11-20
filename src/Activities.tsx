@@ -172,5 +172,5 @@ function ActivityReports() {
 }
 
 export default function Activities() {
-  return window.location.pathname.replace(/\\/+$/, "") === "/activity-reports" ? <ActivityReports/> : <ActivitiesStudent/>;
+  return window.location.pathname.replace(/\/+$/, "") === "/activity-reports" ? <ActivityReports/> : <ActivitiesStudent/>;
 }
