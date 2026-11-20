@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import * as XLSX from "xlsx";
+import Activities from "./Activities";
 
 type Answers = { q1: string; q2: string; q3: string; q4: string; q5: string; literacy: string };
 type Reflection = { g1: string; g2: string; g3: string };
@@ -180,7 +181,7 @@ function TeacherDashboard() {
     <div className="app-shell">
       <header className="topbar no-print">
         <div><span className="brand-mark small">CSS</span><div><strong>Smart CSS Exit Ticket</strong><small>Computer Maintenance with Safety</small></div></div>
-        <button className="button ghost" onClick={() => { sessionStorage.removeItem("css_teacher_key"); setAuthenticated(false); setAccessKey(""); }}>Log out</button>
+        <div style={{display:"flex",gap:8,alignItems:"center"}}><a className="button ghost" href="/activities" style={{textDecoration:"none"}}>Student Activities ↗</a><button className="button ghost" onClick={() => { sessionStorage.removeItem("css_teacher_key"); setAuthenticated(false); setAccessKey(""); }}>Log out</button></div>
       </header>
 
       <main className="container">
@@ -277,7 +278,7 @@ function TeacherDashboard() {
 
 function App() {
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
-  return path === "/teacher" ? <TeacherDashboard /> : <StudentPortal />;
+  return path === "/teacher" ? <TeacherDashboard /> : path === "/activities" ? <Activities /> : <StudentPortal />;
 }
 
 function StudentPortal() {
