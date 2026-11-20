@@ -56,3 +56,17 @@ This is not semantic AI grading. Review learner responses before finalizing offi
 - Public learners can submit data but cannot read or delete records through the API.
 - Because the student form is public, share it only with your class and review submissions for spam or duplicate entries.
 - Follow school data privacy and retention practices. Back up the database appropriately.
+
+
+## Computer Maintenance with Safety activities
+
+The repository also includes an interactive activity portal aligned to the supplied classroom activity slides:
+
+- Student activity portal: `/activities`
+- Teacher group-report viewer: `/activity-reports` (requires `TEACHER_ACCESS_KEY`)
+- Main teacher dashboard: `/teacher`
+- Learner exit ticket: `/student`
+
+The activities portal includes the 8-step sequencing task, picture-cue checklist, paired Technician/Recorder performance task, inspection record, Computer Maintenance Report fields, literacy and numeracy tasks, extension, reflection, and 10-item formative quiz. Group submissions are stored in the `css_activity_submissions` PostgreSQL table. The teacher report viewer retrieves the submitted group records through the protected API.
+
+**Google Docs template:** [Open the Computer Maintenance Report template](https://docs.google.com/document/d/1DW_jDML8HQ7AT-oD7OVjFZah5eC7ROKmIwLVQ0NxyaY/edit?usp=sharing). The app currently links learners to this existing Google Doc and saves their submitted reports in the app database. It does not yet create or write a separate Google Doc for each group; that requires an authenticated Google Docs/Drive integration or an Apps Script endpoint.
